@@ -78,7 +78,9 @@ main subroutine
 	
 	ldx #welc_message
 	jsr print
-	
+
+; RAM test
+
 	ldaa #$C0	;set addr to 2nd line
 	staa LCD_COMMAND
 	jsr small_delay
@@ -106,6 +108,41 @@ main subroutine
 
 	jsr print				;Print result
 	
+; HW revision check
+	
+	ldaa #$90	;set addr to 3rd line
+	staa LCD_COMMAND
+	jsr small_delay
+	
+	ldab INPUT_LATCH
+	
+	andb #$C0	;mask other bits, keep D7 & D6
+	
+	lsrb
+	lsrb
+	lsrb
+	lsrb
+	lsrb
+	lsrb		;shift bits 6 times
+	
+	clc			;clear carry
+	
+	;so now D1-D0 is D7-D6
+	
+	;Pick correct key string
+	ldx #hw_cfg_msg_list
+	abx
+	abx			;add two times, as pointer is 16bit
+	ldd 0,x	
+	xgdx
+
+	;Put key string
+	jsr print
+
+	jsr delay
+
+; KEYBOARD test
+
 .progstart
 	
 	;Start KBD scan
@@ -235,6 +272,11 @@ welc_message	dc "trwgQ26xxx, 2025", 0
 ram_ok_msg		dc "RAM batt. is OK!", 0
 ram_fail_msg	dc "RAM batt. is low", 0
 
+hw_cfg_0_msg	dc "HW config.   0x0", 0
+hw_cfg_1_msg	dc "HW config.   0x1", 0
+hw_cfg_2_msg	dc "HW config.   0x2", 0
+hw_cfg_3_msg	dc "HW config.   0x3", 0
+
 no_key_msg		dc " PRESS ANY KEY! ", 0
 
 r_key_msg		dc "RST KEY PRESSED!", 0
@@ -260,6 +302,8 @@ four_key_msg	dc "  4 KEY PRESSED!", 0
 eight_key_msg	dc "  8 KEY PRESSED!", 0
 retry_key_msg	dc "RETRY KEY PRES.!", 0
 down_key_msg	dc "DOWN KEY PRESS.!", 0
+
+hw_cfg_msg_list	dc.w hw_cfg_0_msg,	hw_cfg_1_msg,	hw_cfg_2_msg,	hw_cfg_3_msg
 
 key_msg_list	dc.w r_key_msg,		one_key_msg,	five_key_msg,	fc_key_msg,		ok_key_msg	;COLUMN 1
 				dc.w qm_key_msg,	two_key_msg,	six_key_msg,	nine_key_msg,	nok_key_msg	;COLUMN 2
