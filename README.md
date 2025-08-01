@@ -1,6 +1,15 @@
 # Fiat Lancia Tester Tester
 
-Test ROM for FLT\ART\CU-1. Tests the LCD, keyboard and the battery in the RAM.
+Test ROM for FLT\ART\CU-1. Tests the LCD, keyboard and the battery in the RAM. Show's tester internal configuration.
+
+Descripion of hardware configuration display:
+
+| HW configuration | RAM size | FT system test |
+| --- | --- | --- |
+| 0x0 | 2K | NO |
+| 0x1 | 8K | NO |
+| 0x2 | 2K | YES |
+| 0x3 | 8K | YES |
 
 # Usage
 
